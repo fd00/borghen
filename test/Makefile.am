@@ -7,7 +7,7 @@ glib_CPPFLAGS = -I$(top_srcdir)/include
 glib_LDADD = $(top_builddir)/lib/libborghen.la
 glib_SOURCES = glib.c
 
-if HAS_APR
+if USE_APR
 TEST_PROGS += apr
 apr_CFLAGS = $(GLIB_CFLAGS) $(APR_CFLAGS)
 apr_CPPFLAGS = -I$(top_srcdir)/include
@@ -15,7 +15,7 @@ apr_LDADD = $(top_builddir)/lib/libborghen.la
 apr_SOURCES = apr.c
 endif
 
-if HAS_EINA
+if USE_EINA
 TEST_PROGS += eina
 eina_CFLAGS = $(GLIB_CFLAGS) $(EINA_CFLAGS)
 eina_CPPFLAGS = -I$(top_srcdir)/include

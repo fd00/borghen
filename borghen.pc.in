@@ -4,7 +4,7 @@ libdir=@libdir@
 includedir=@includedir@
 
 Name: borghen
-Description: Hashtable Wrapper
+Description: Hashtable wrapper
 Version: @VERSION@
 Cflags: -I${includedir}
 Libs: -L${libdir} -lborghen

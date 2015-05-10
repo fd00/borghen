@@ -4,15 +4,16 @@
 #include <gmodule.h>
 
 typedef enum {
-  BORGHEN_BACKEND_GLIB    = 0,
-  BORGHEN_BACKEND_APR     = 1,
-  BORGHEN_BACKEND_EINA    = 2,
-  BORGHEN_BACKEND_POSIX   = 3,
+        BORGHEN_BACKEND_GLIB    = 0,
+        BORGHEN_BACKEND_APR     = 1,
+        BORGHEN_BACKEND_EINA    = 2,
+        BORGHEN_BACKEND_POSIX   = 3,
+        BORGHEN_BACKEND_SQLITE  = 4,
 } BorghenBackendType;
 
-typedef gpointer             BorghenObject;
-typedef gboolean             BorghenBoolean;
-typedef guint                BorghenSize;
+typedef gpointer BorghenObject;
+typedef gboolean BorghenBoolean;
+typedef guint BorghenSize;
 typedef gchar*               BorghenString;
 typedef GModule*             BorghenModule;
 typedef struct _BorghenHash *BorghenHash;

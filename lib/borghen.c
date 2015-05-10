@@ -17,12 +17,13 @@ typedef struct _BorghenHash {
 } _BorghenHash;
 
 static BorghenString _borghen_modules[] = {
-    "glib",
-    "apr",
-    "eina",
-    "posix",
+  "glib",
+  "apr",
+  "eina",
+  "posix",
+  "sqlite",
 };
-#define BORGHEN_N_MODULES 4
+#define BORGHEN_N_MODULES 5
 static GModule* _borghen_handles[BORGHEN_N_MODULES];
 
 static BorghenBoolean _borghen_initialized = FALSE;
@@ -35,15 +36,15 @@ static GModule* _borghen_module_open(BorghenString n)
   gchar buf[PATH_MAX];
 
   if (bpd) {
-      g_snprintf(buf, PATH_MAX, "%s%s%s", bpd, G_DIR_SEPARATOR_S, n);
-      if ((g = g_module_open(buf, G_MODULE_BIND_MASK))) {
-          return g;
-      }
+    g_snprintf(buf, PATH_MAX, "%s%s%s", bpd, G_DIR_SEPARATOR_S, n);
+    if ((g = g_module_open(buf, G_MODULE_BIND_MASK))) {
+      return g;
+    }
   }
 
   g_snprintf(buf, PATH_MAX, "%s%s%s", PKGLIBDIR, G_DIR_SEPARATOR_S, n);
   if ((g = g_module_open(buf, G_MODULE_BIND_MASK))) {
-      return g;
+    return g;
   }
 
   return NULL;
@@ -52,15 +53,15 @@ static GModule* _borghen_module_open(BorghenString n)
 BorghenBoolean borghen_initialize()
 {
   if (_borghen_initialized) {
-      return FALSE;
+    return FALSE;
   }
   for (int i = 0; i < BORGHEN_N_MODULES; i++) {
-      if ((_borghen_handles[i] = _borghen_module_open(_borghen_modules[i]))) {
-          gpointer initialize;
-          if (g_module_symbol(_borghen_handles[i], "borghen_backend_initialize", &initialize)) {
-              ((void(*)()) initialize)();
-          }
+    if ((_borghen_handles[i] = _borghen_module_open(_borghen_modules[i]))) {
+      gpointer initialize;
+      if (g_module_symbol(_borghen_handles[i], "borghen_backend_initialize", &initialize)) {
+        ((void (*)())initialize)();
       }
+    }
   }
   return _borghen_initialized = TRUE;
 }
@@ -73,15 +74,15 @@ BorghenBoolean borghen_initialized()
 BorghenBoolean borghen_finalize()
 {
   if (_borghen_finalized) {
-      return FALSE;
+    return FALSE;
   }
   for (int i = 0; i < BORGHEN_N_MODULES; i++) {
-      if (_borghen_handles[i]) {
-          gpointer finalize;
-          if (g_module_symbol(_borghen_handles[i], "borghen_backend_finalize", &finalize)) {
-              ((void(*)()) finalize)();
-          }
+    if (_borghen_handles[i]) {
+      gpointer finalize;
+      if (g_module_symbol(_borghen_handles[i], "borghen_backend_finalize", &finalize)) {
+        ((void (*)())finalize)();
       }
+    }
   }
   return _borghen_finalized = TRUE;
 }
@@ -94,48 +95,48 @@ BorghenBoolean borghen_finalized()
 BorghenHash borghen_new(BorghenBackendType t)
 {
   if (!_borghen_handles[t]) {
-      return NULL;
+    return NULL;
   }
   GModule* g = _borghen_handles[t];
 
   gpointer create;
   if (!g_module_symbol(g, "borghen_backend_create", &create)) {
-      return NULL;
+    return NULL;
   }
 
   gpointer destroy;
   if (!g_module_symbol(g, "borghen_backend_destroy", &destroy)) {
-      return NULL;
+    return NULL;
   }
 
   gpointer insert;
   if (!g_module_symbol(g, "borghen_backend_insert", &insert)) {
-      return NULL;
+    return NULL;
   }
 
   gpointer remove;
   if (!g_module_symbol(g, "borghen_backend_remove", &remove)) {
-      return NULL;
+    return NULL;
   }
 
   gpointer get;
   if (!g_module_symbol(g, "borghen_backend_get", &get)) {
-      return NULL;
+    return NULL;
   }
 
   gpointer contains;
   if (!g_module_symbol(g, "borghen_backend_contains", &contains)) {
-      return NULL;
+    return NULL;
   }
 
   gpointer size;
   if (!g_module_symbol(g, "borghen_backend_size", &size)) {
-      return NULL;
+    return NULL;
   }
 
   BorghenHash h = malloc(sizeof(_BorghenHash));
   h->type = t;
-  h->hash = ((BorghenObject(*)()) create)();
+  h->hash = ((BorghenObject (*)())create)();
   h->destory = destroy;
   h->insert = insert;
   h->remove = remove;
